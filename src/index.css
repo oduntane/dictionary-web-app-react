@@ -1,1 +1,55 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-*: initial;
+
+    --color-white: #FFFFFF;
+    --color-grey-800: #050505;
+    --color-grey-700: #1F1F1F;
+    --color-grey-600: #2D2D2D;
+    --color-grey-500: #3A3A3A;
+    --color-grey-400: #757575;
+    --color-grey-200: #E9E9E9;
+    --color-grey-100: #F4F4F4;
+    --color-purple-500: #A445ED;
+    --color-red-500: #FF5252;
+
+    --font-sans: "Inter", sans-serif;
+    --font-serif: "Lora", serif;
+    --font-mono: "Inconsolata", monospace;
+
+}
+
+@layer components {
+    .headingL {
+        font-size: 4rem;
+        line-height: 4.8125rem;
+        font-weight: 700;
+    }
+
+    .headingM {
+        font-size: 1.5rem;
+        line-height: 1.8125rem;
+        font-weight: 400;
+    }
+
+    .headingS {
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+        font-weight: 400;
+    }
+
+    .bodyM {
+        font-size: 1.125rem;
+        line-height: 1.5rem;
+        font-weight: 400;
+    }
+
+    .bodyS {
+        font-size: 0.875rem;
+        line-height: 1.0625rem;
+        font-weight: 400;
+    }
+}
