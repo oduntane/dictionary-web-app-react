@@ -2,7 +2,7 @@
 function SearchField() {
     return (
         <div className="min-w-[12.5rem] w-full h-[3rem] bg-grey-100 rounded-[1rem] flex gap-4 px-[1.5rem] py-4">
-            <input aria-label="Search Field" className="grow" placeholder="Search for any word..."/>
+            <input aria-label="Search Field" className="grow text-base font-bold text-grey-600" placeholder="Search for any word..."/>
             <button className="grow-0 shrink-0">
                 <span className="sr-only">Enter</span>
                 <span className="block w-4 aspect-square">
