@@ -4,6 +4,8 @@ import SearchField from "./components/SearchField"
 
 function App() {
 
+    const [font, setFont] = useState("font-sans")  // values: "font-sans", "font-serif", "font-mono"
+
     const [keyword, setKeyword] = useState('')
     const [definition, setDefinition] = useState(null)
     /*
@@ -39,17 +41,24 @@ function App() {
     }
 
     return (
-        <div role="application" className="min-h-dvh pt-[1.5rem] pb-[5.3125rem] bg-white flex flex-col gap-6 font-sans tablet:pt-[3.625rem] tablet:pb-[7.375rem] tablet:gap-[3.125rem] desktop:gap-[2.6875rem]">
+        <div role="application" className={`min-h-dvh pt-[1.5rem] pb-[5.3125rem] bg-white flex flex-col gap-6 ${font} tablet:pt-[3.625rem] tablet:pb-[7.375rem] tablet:gap-[3.125rem] desktop:gap-[2.6875rem]`}>
             <h1 className="sr-only">Dictionary Web App</h1>
             {/* Header */}
             <header className="w-[87.2%] mx-auto flex flex-col gap-[1.5rem] tablet:w-[89.71%] tablet:gap-[3.2187rem] desktop:w-[46.0625rem]">
                 <div className="flex justify-between items-center">
                     <span role="presentation"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="38" viewBox="0 0 34 38"><g fill="none" fillRule="evenodd" stroke="#838383" strokeLinecap="round" strokeWidth="1.5"><path d="M1 33V5a4 4 0 0 1 4-4h26.8A1.2 1.2 0 0 1 33 2.2v26.228M5 29h28M5 37h28"/><path strokeLinejoin="round" d="M5 37a4 4 0 1 1 0-8"/><path d="M11 9h12"/></g></svg></span>
                     <div className="inline-flex gap-[1.625rem] items-center tablet:gap-[1.625rem]">
-                        <button aria-label="change application font" className="inline-flex gap-[1.3125rem] items-center tablet:gap-[1.875rem]">
-                            <span className="text-sm text-grey-600 font-bold leading-[1.5rem] tablet:text-md">Sans Serif</span>
-                            <span role="presentation"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8"><path fill="none" stroke="#A445ED" strokeWidth="1.5" d="m1 1 6 6 6-6"/></svg></span>
-                        </button>
+                        <div className="relative">
+                            <button aria-label="change application font" className="inline-flex gap-[1.3125rem] items-center tablet:gap-[1.875rem] cursor-pointer">
+                                <span className="text-sm text-grey-600 font-bold leading-[1.5rem] tablet:text-md">{font === 'font-serif' ? 'Serif' : font === 'font-sans' ? 'Sans Serif' : 'Mono'}</span>
+                                <span role="presentation"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8"><path fill="none" stroke="#A445ED" strokeWidth="1.5" d="m1 1 6 6 6-6"/></svg></span>
+                            </button>
+                            <div className="absolute right-0 top-[2.9375rem] w-[11.4375rem] h-[9.5rem] z-10 p-6 flex flex-col gap-4  text-start [&>button]:text-start bg-white shadow-[0_5px_30px_0_hsla(0,0%,0%,10%)] rounded-2xl [&>button]:text-md font-bold [&>button]:hover:text-purple-500 [&>button]:cursor-pointer">
+                                <button className="font-sans" onClick={() => setFont('font-sans')}>Sans Serif</button>
+                                <button className="font-serif"onClick={() => setFont('font-serif')}>Serif</button>
+                                <button className="font-mono" onClick={() => setFont('font-mono')}>Mono</button>
+                            </div>
+                        </div>
                         <span role="presentation" className="block w-[1px] h-[2rem] bg-grey-200"></span> {/* Separator */}
                         <ThemeToggleButton />
                     </div>
