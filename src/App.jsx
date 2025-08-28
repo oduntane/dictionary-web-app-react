@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useRef, useState } from "react"
 import { PlayButton, ThemeToggleButton } from "./components/buttons"
 import SearchField from "./components/SearchField"
 
@@ -16,6 +16,21 @@ function App() {
     */
     const [isEmpty, toggleEmpty] = useState(false) // 
     const [error, setError] = useState(null)
+
+    let audioUrl;
+
+
+    if (definition !== null) {
+        console.log(definition.phonetics)
+
+        audioUrl = definition.phonetics.reduce((prev, current) => {
+            if (current.audio !== "") {
+                return current.audio
+            } else {
+                return prev
+            }
+        }, "")
+    }
 
     function handleSearch(keyword) {
         if (keyword === "") {
@@ -80,7 +95,7 @@ function App() {
                             <span className="text-2xl font-bold text-grey-600 tablet:text-3xl dark:text-white">{definition.word}</span>
                             <span className="text-md font-normal leading-[1.5rem] text-purple-500 tablet:text-xl">{definition.phonetic}</span>
                         </div>
-                        <PlayButton />
+                        <PlayButton audioUrl={audioUrl} />
                     </div>
                     {/* Sections: Parts of Speech */}
                     {
