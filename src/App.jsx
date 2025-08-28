@@ -1,27 +1,45 @@
-import { useRef, useState } from "react"
+import { useReducer, useRef, useState } from "react"
 import { PlayButton, ThemeToggleButton } from "./components/buttons"
 import SearchField from "./components/SearchField"
+
+const initialState = {
+    definition: null,
+    error: null,
+    keyword: "",
+    isEmpty: false
+}
+
+function stateReducer(state, action) {
+    switch (action.type){
+        case "SET_DEFINITION": {
+            return {...state, error: null, definition: action.payload}
+        };
+        case "SET_ERROR": {
+            return {...state, definition: null, error: action.payload}
+        };
+        case "SET_KEYWORD": {
+            return {...state, isEmpty: action.payload === "", keyword: action.payload}
+        };
+    }
+}
 
 function App() {
 
     const [font, setFont] = useState("font-sans")  // values: "font-sans", "font-serif", "font-mono"
     const overlay = useRef(null)
 
-    const [keyword, setKeyword] = useState('')
-    const [definition, setDefinition] = useState(null)
+    const [{keyword, definition, isEmpty, error}, dispatch] = useReducer(stateReducer, initialState);
+
     /*
         I made the initial empty state false so the SearchField error state is false on first render.
         I could have used a computed value (from the keyword) instead of creating an isEmpty state, but it wil make the SearchField's initial
         error state true on first render, and it will always show "Whoops, can't be empty..." when you first load the app
     */
-    const [isEmpty, toggleEmpty] = useState(false) // 
-    const [error, setError] = useState(null)
 
     let audioUrl;
 
 
     if (definition !== null) {
-        console.log(definition.phonetics)
 
         audioUrl = definition.phonetics.reduce((prev, current) => {
             if (current.audio !== "") {
@@ -33,27 +51,36 @@ function App() {
     }
 
     function handleSearch(keyword) {
-        if (keyword === "") {
-            toggleEmpty(true)
-            setKeyword(keyword)
-            setDefinition(null)
-            toggleEmpty(true)
-        } else {
-            fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${keyword}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setDefinition(data[0])
-                toggleEmpty(false)
-                setKeyword(keyword)
-                setError(null)
+        dispatch({
+            type: "SET_KEYWORD",
+            payload: keyword
+        })
+
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${keyword}`)
+        .then((response) => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw response.json()
+            }
+        })
+        .then((data) => {
+            dispatch({
+                type: "SET_DEFINITION",
+                payload: data[0]
             })
-            .catch((error) => {
-                setDefinition(null)
-                toggleEmpty(false)
-                setKeyword(keyword)
-                setError(error)
+            console.log("Data: ", data)
+        })
+        .catch((error) => {
+            return error
+
+        })
+        .then((error) => {
+            dispatch({
+                type: "SET_ERROR",
+                payload: error
             })
-        }
+        })
     }
 
     return (
