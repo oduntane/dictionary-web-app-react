@@ -2,6 +2,11 @@ import { useReducer, useRef, useState } from "react"
 import { PlayButton, ThemeToggleButton } from "./components/buttons"
 import SearchField from "./components/SearchField"
 
+/*
+        I made the initial empty state false so the SearchField error state is false on first render.
+        I could have used a computed value (from the keyword) instead of creating an isEmpty state, but it wil make the SearchField's initial
+        error state true on first render, and it will always show "Whoops, can't be empty..." when you first load the app
+    */
 const initialState = {
     definition: null,
     error: null,
@@ -30,11 +35,7 @@ function App() {
 
     const [{keyword, definition, isEmpty, error}, dispatch] = useReducer(stateReducer, initialState);
 
-    /*
-        I made the initial empty state false so the SearchField error state is false on first render.
-        I could have used a computed value (from the keyword) instead of creating an isEmpty state, but it wil make the SearchField's initial
-        error state true on first render, and it will always show "Whoops, can't be empty..." when you first load the app
-    */
+    
 
     let audioUrl;
 
@@ -48,6 +49,8 @@ function App() {
                 return prev
             }
         }, "")
+
+        audioUrl = audioUrl !== "" ? audioUrl : definition.word
     }
 
     function handleSearch(keyword) {
@@ -69,17 +72,14 @@ function App() {
                 type: "SET_DEFINITION",
                 payload: data[0]
             })
-            console.log("Data: ", data)
         })
-        .catch((error) => {
-            return error
-
-        })
-        .then((error) => {
+        .catch(async (error) => {
+            let err = await error
             dispatch({
                 type: "SET_ERROR",
-                payload: error
+                payload: err
             })
+
         })
     }
 
@@ -170,6 +170,18 @@ function App() {
                             <span role="presentation">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path fill="none" stroke="#838383" stroke-linecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6.09 3.545H2.456A1.455 1.455 0 0 0 1 5v6.545A1.455 1.455 0 0 0 2.455 13H9a1.455 1.455 0 0 0 1.455-1.455V7.91m-5.091.727 7.272-7.272m0 0H9m3.636 0V5"/></svg>
                             </span>
+                        </div>
+                    </div>
+                </main>
+            }
+            {
+                error &&
+                <main className="w-[87.2%] tablet:w-[89.71%] desktop:w-[46.0625rem] mx-auto text-center mt-[calc(8.25rem-2.6875rem)]">
+                    <div className="flex flex-col gap-[2.75rem]">
+                        <span role="presentation" className="text-3xl">😕</span>
+                        <div className="flex flex-col gap-6">
+                            <p className="text-lg font-bold text-grey-600 dark:text-white">{error.title}</p>
+                            <p className="text-md text-normal text-grey-400">{`${error.message} ${error.resolution}`}</p>
                         </div>
                     </div>
                 </main>

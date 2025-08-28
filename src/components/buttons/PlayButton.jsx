@@ -2,7 +2,17 @@
 function PlayButton({audioUrl}) {
     return (
         <button onClick={() => {
-            (new Audio(audioUrl)).play()
+            if (audioUrl.startsWith("http")) {
+                (new Audio(audioUrl)).play()
+            } else {
+                try {
+                    const utterance = new SpeechSynthesisUtterance(audioUrl)
+                    window.speechSynthesis.speak(utterance)
+                } catch {
+                    //
+                }
+            }
+            
         }}>
             <span className="sr-only">Listen</span>
             <span role="presentation">
