@@ -139,7 +139,7 @@ function App() {
                                             {
                                                 meaning.definitions.map((definition) => {
                                                     return (
-                                                        <li className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal tablet:text-md dark:text-white">
+                                                        <li key={definition.definition} className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal tablet:text-md dark:text-white">
                                                             <span role="presentation" className="block h-[0.375rem] aspect-square rounded-full bg-purple-500 mt-[0.625rem]"></span>
                                                             <div className="flex flex-col gap-[0.8125rem]">
                                                                 <p>{definition.definition}</p>
