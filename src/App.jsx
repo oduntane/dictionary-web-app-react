@@ -1,7 +1,22 @@
+import { useState } from "react"
 import { PlayButton, ThemeToggleButton } from "./components/buttons"
 import SearchField from "./components/SearchField"
 
 function App() {
+
+    const [definition, setDefinition] = useState(null)
+    const [error, setError] = useState(null)
+
+    function handleSearch(definition, error) {
+        if (error) {
+            setError(error)
+            setDefinition(null)
+            return
+        }
+        setDefinition(definition[0])
+        setError(null)
+    }
+
     return (
         <div role="application" className="min-h-dvh pt-[1.5rem] pb-[5.3125rem] bg-white flex flex-col gap-6 font-sans">
             <h1 className="sr-only">Dictionary Web App</h1>
@@ -18,90 +33,73 @@ function App() {
                         <ThemeToggleButton />
                     </div>
                 </div>
-                <SearchField />
+                <SearchField onSearch={handleSearch}/>
             </header>
             {/* Main */}
-            <main className="w-[87.2%] mx-auto flex flex-col gap-8" aria-live="polite">
-                <h2 className="sr-only">Word Description</h2>
-                {/* Word Header */}
-                <div className="w-full flex justify-between">
-                    <div className="flex flex-col gap-2">
-                        <span className="text-2xl font-bold text-grey-600">keyboard</span>
-                        <span className="text-md font-normal leading-[1.5rem] text-purple-500">/ˈkiːbɔːd/</span>
+            {definition !== null && error === null?
+                <main className="w-[87.2%] mx-auto flex flex-col gap-8" aria-live="polite">
+                    <h2 className="sr-only">Word Description</h2>
+                    {/* Word Header */}
+                    <div className="w-full flex justify-between">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-2xl font-bold text-grey-600">{definition.word}</span>
+                            <span className="text-md font-normal leading-[1.5rem] text-purple-500">{definition.phonetic}</span>
+                        </div>
+                        <PlayButton />
                     </div>
-                    <PlayButton />
-                </div>
-                {/* Sections: Parts of Speech */}
-                <div className="flex flex-col gap-8">
-                    <div className="flex gap-4 items-center">
-                        <span className="text-md font-bold text-grey-600 italic">noun</span>
-                        <span role="presentation" className="block h-[1px] grow bg-grey-200"></span>
-                    </div>
-                    <div className="">
-                        <span className="block mb-4 text-base font-normal text-grey-400">Meaning</span>
-                        <ul className="mb-6 flex flex-col gap-[0.8125rem]">
-                            <li className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal">
-                                <span role="presentation" className="block h-[0.375rem] aspect-square rounded-full bg-purple-500 mt-[0.625rem]"></span>
-                                <div className="flex flex-col gap-[0.8125rem]">
-                                    <p>(etc.) A set of keys used to operate a typewriter, computer etc.</p>
-                                    <blockquote></blockquote>
+                    {/* Sections: Parts of Speech */}
+                    {
+                        definition.meanings.map((meaning, index) => {
+                            return (
+                                <div className="flex flex-col gap-8" key={index}> {/* The index is unique and does not change*/}
+                                    <div className="flex gap-4 items-center">
+                                        <span className="text-md font-bold text-grey-600 italic">{meaning.partOfSpeech}</span>
+                                        <span role="presentation" className="block h-[1px] grow bg-grey-200"></span>
+                                    </div>
+                                    <div className="">
+                                        <span className="block mb-4 text-base font-normal text-grey-400">Meaning</span>
+                                        <ul className="mb-6 flex flex-col gap-[0.8125rem]">
+                                            {
+                                                meaning.definitions.map((definition) => {
+                                                    return (
+                                                        <li className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal">
+                                                            <span role="presentation" className="block h-[0.375rem] aspect-square rounded-full bg-purple-500 mt-[0.625rem]"></span>
+                                                            <div className="flex flex-col gap-[0.8125rem]">
+                                                                <p>{definition.definition}</p>
+                                                                {definition.example && <blockquote><q>{definition.example}</q></blockquote>}
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                        {meaning.synonyms.length > 0 && 
+                                            <div className="flex gap-6">
+                                                <span className="grow-0 text-base font-normal text-grey-400">Synonyms</span>
+                                                <span className="grow text-left text-base font-bold text-purple-500">{meaning.synonyms.join(", ")}</span>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
-                            </li>
-                            <li className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal">
-                                <span role="presentation" className="block h-[0.375rem] aspect-square rounded-full bg-purple-500 mt-[0.625rem]"></span>
-                                <div className="flex flex-col gap-[0.8125rem]">
-                                    <p>A component of many instruments including the piano, organ, and harpsichord consisting of usually black and white keys that cause different tones to be produced when struck.</p>
-                                    <blockquote></blockquote>
-                                </div>
-                            </li>
-                            <li className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal">
-                                <span role="presentation" className="block h-[0.375rem] aspect-square rounded-full bg-purple-500 mt-[0.625rem]"></span>
-                                <div className="flex flex-col gap-[0.8125rem]">
-                                    <p>A device with keys of a musical keyboard, used to control electronic sound-producing devices which may be built into or separate from the keyboard device.</p>
-                                    <blockquote></blockquote>
-                                </div>
-                            </li>
-                        </ul>
-                        <div className="flex gap-6">
-                            <span className="grow-0">Synonyms</span>
-                            <span className="grow text-left">electronic keyboard</span>
+                            )
+                        })
+                    }
+                    
+                    
+                    <div className="flex flex-col gap-2 border-t-[1px] border-t-grey-200 pt-6 text-sm">
+                        <span className="underline text-grey-400">Source</span>
+                        <div className="underline flex items-center gap-4 font-normal">
+                            <a target="_blank" className="text-grey-600" href={`${definition.sourceUrls[0]}`}>{definition.sourceUrls[0]}</a>
+                            <span role="presentation">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path fill="none" stroke="#838383" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.09 3.545H2.456A1.455 1.455 0 0 0 1 5v6.545A1.455 1.455 0 0 0 2.455 13H9a1.455 1.455 0 0 0 1.455-1.455V7.91m-5.091.727 7.272-7.272m0 0H9m3.636 0V5"/></svg>
+                            </span>
                         </div>
                     </div>
-                </div>
+                </main> :
+                <main aria-live="polite">
 
-                <div className="flex flex-col gap-8">
-                    <div className="flex gap-4 items-center">
-                        <span className="text-md font-bold text-grey-600 italic">verb</span>
-                        <span role="presentation" className="block h-[1px] grow bg-grey-200"></span>
-                    </div>
-                    <div className="">
-                        <span className="block mb-4">Meaning</span>
-                        <ul className="mb-6 flex flex-col gap-[0.8125rem]">
-                            <li className="flex gap-[1.25rem] items-start text-sm leading-[1.5rem] text-grey-600 font-normal">
-                                <span role="presentation" className="block h-[0.375rem] aspect-square rounded-full bg-purple-500 mt-[0.625rem]"></span>
-                                <div className="flex flex-col gap-[0.8125rem]">
-                                    <p>To type on a computer keyboard.</p>
-                                    <blockquote>“Keyboarding is the part of this job I hate the most.”</blockquote>
-                                </div>
-                            </li>
-                        </ul>
-                        <div className="flex gap-6">
-                            <span className="grow-0 text-base font-normal text-grey-400">Synonyms</span>
-                            <span className="grow text-left text-base font-bold text-purple-500">electronic keyboard</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="flex flex-col gap-2 border-t-[1px] border-t-grey-200 pt-6 text-sm">
-                    <span className="underline text-grey-400">Source</span>
-                    <div className="underline flex items-center gap-4 font-normal">
-                        <a className="text-grey-600" href="#">https://en.wikitionary.org/wiki/keyboard</a>
-                        <span role="presentation">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path fill="none" stroke="#838383" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.09 3.545H2.456A1.455 1.455 0 0 0 1 5v6.545A1.455 1.455 0 0 0 2.455 13H9a1.455 1.455 0 0 0 1.455-1.455V7.91m-5.091.727 7.272-7.272m0 0H9m3.636 0V5"/></svg>
-                        </span>
-                    </div>
-                </div>
-            </main>
+                </main>
+            }
         </div>
     )
 }
