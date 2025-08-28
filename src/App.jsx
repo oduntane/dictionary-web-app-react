@@ -10,7 +10,7 @@ function App() {
     const [keyword, setKeyword] = useState('')
     const [definition, setDefinition] = useState(null)
     /*
-        I made the initial empty state false so the SearchField error state is first on first render.
+        I made the initial empty state false so the SearchField error state is false on first render.
         I could have used a computed value (from the keyword) instead of creating an isEmpty state, but it wil make the SearchField's initial
         error state true on first render, and it will always show "Whoops, can't be empty..." when you first load the app
     */
