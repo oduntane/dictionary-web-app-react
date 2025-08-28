@@ -28,6 +28,10 @@
     --text-2xl: 2rem; /* 32px */
     --text-3xl: 4rem; /* 64px */
 
+    --breakpoint-*: initial;
+    --breakpoint-tablet: 48rem;
+    --breakpoint-desktop: 90rem;
+
 }
 
 /* 14 16 18 20 24 32 64 */

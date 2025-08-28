@@ -1,7 +1,7 @@
 
 function ThemeToggleButton() {
     return (
-        <div className="inline-flex gap-[0.75rem] items-center">
+        <div className="inline-flex gap-[0.75rem] items-center tablet:gap-[1.25rem]">
             <span className="sr-only" aria-live="polite">{/* TODO */}</span>
             <button className="w-[2.5rem] h-[1.25rem] bg-grey-400 rounded-[0.625rem] p-[0.1875rem]">
                 <span className="sr-only">Toggle Theme</span>
