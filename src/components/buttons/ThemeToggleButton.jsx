@@ -1,7 +1,18 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function ThemeToggleButton() {
-    const [theme, setTheme] = useState('light')
+    const [theme, setTheme] = useState('')
+
+    useEffect(() => {
+        let t = localStorage.getItem("theme")
+
+        if (t === null) {
+            setTheme("light")
+        } else {
+            setTheme(t)
+            document.body.classList.add(t)
+        }
+    }, [])
 
     return (
         <div className="inline-flex gap-[0.75rem] items-center tablet:gap-[1.25rem]">
@@ -10,9 +21,11 @@ function ThemeToggleButton() {
                 if (theme === 'light') {
                     document.body.classList.add('dark')
                     setTheme('dark')
+                    localStorage.setItem("theme", "dark")
                 } else {
                     document.body.classList.remove('dark')
                     setTheme('light')
+                    localStorage.setItem("theme", "light")
                 }
             }}>
                 <span className="sr-only">Toggle Theme</span>
